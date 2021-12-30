@@ -7,6 +7,8 @@ import { authenticatedFetch } from "@shopify/app-bridge-utils";
 import { Redirect } from "@shopify/app-bridge/actions";
 import "@shopify/polaris/dist/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
+import { SWRConfig } from "swr";
+import "../styles/tailwind.css";
 
 function userLoggedInFetch(app) {
   const fetchFunction = authenticatedFetch(app);
@@ -52,18 +54,25 @@ function MyProvider(props) {
 class MyApp extends App {
   render() {
     const { Component, pageProps, host } = this.props;
+    
+    const config = {
+      apiKey: API_KEY,
+      host: host,
+      forceRedirect: true,
+    }
+
     return (
-      <AppProvider i18n={translations}>
-        <Provider
-          config={{
-            apiKey: API_KEY,
-            host: host,
-            forceRedirect: true,
-          }}
-        >
-          <MyProvider Component={Component} {...pageProps} />
-        </Provider>
-      </AppProvider>
+      <SWRConfig
+          value={{
+            fetcher: (resource, init) =>
+              fetch(resource, init).then((res) => res.json()),
+          }}>
+        <AppProvider i18n={translations}>
+          <Provider config={config}>
+            <MyProvider Component={Component} {...pageProps} />
+          </Provider>
+        </AppProvider>
+      </SWRConfig>
     );
   }
 }
