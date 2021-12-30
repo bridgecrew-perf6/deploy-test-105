@@ -2,7 +2,7 @@ import { Heading, Page } from "@shopify/polaris";
 
 const Index = () => (
   <Page>
-    <Heading>Perkd App 🎉</Heading>
+    <Heading>Perkd App 0.1 🎉</Heading>
   </Page>
 );
 
